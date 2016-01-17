@@ -105,7 +105,7 @@ class DictCache(APICache):
             return None
 
     def put(self, key, value, ex):
-        self._dict[key] = value, ex
+        self._dict[key] = value, ex + time.time()
 
     def invalidate(self, key):
         self._dict.pop(key, None)
