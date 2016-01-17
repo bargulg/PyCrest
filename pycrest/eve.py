@@ -52,7 +52,7 @@ class FileCache(APICache):
 
     def put(self, key, value, ex):
         with open(self._getpath(key), 'wb') as f:
-            f.write(zlib.compress(pickle.dumps((value, ex), -1)))
+            f.write(zlib.compress(pickle.dumps((value, ex + time.time()), -1)))
         self._cache[key] = value
 
     def get(self, key):
