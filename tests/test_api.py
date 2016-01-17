@@ -462,7 +462,7 @@ class TestApiCache(unittest.TestCase):
         # Just because pragma: no cover is ugly
         cache = pycrest.eve.APICache()
         self.assertRaises(NotImplementedError, lambda: cache.get("foo"))
-        self.assertRaises(NotImplementedError, lambda: cache.put("foo", "bar"))
+        self.assertRaises(NotImplementedError, lambda: cache.put("foo", "bar", time.time()))
         self.assertRaises(NotImplementedError, lambda: cache.invalidate("foo"))
 
         # Test default DictCache
@@ -470,7 +470,7 @@ class TestApiCache(unittest.TestCase):
         self.assertEqual(type(crest.cache).__name__, "DictCache")
         crest.cache.invalidate('nxkey')
         self.assertEqual(crest.cache.get('nxkey'), None)
-        crest.cache.put('key', 'value')
+        crest.cache.put('key', 'value', time.time() + 1)
         self.assertEqual(crest.cache.get('key'), 'value')
 
 
@@ -490,7 +490,7 @@ class TestApiCache(unittest.TestCase):
         self.assertEqual(crest.cache.get('nxkey'), None)
 
         # cache (key, value) pair and retrieve it
-        crest.cache.put('key', 'value')
+        crest.cache.put('key', 'value', time.time() + 1)
         self.assertEqual(crest.cache.get('key'), 'value')
 
         # retrieve from disk
