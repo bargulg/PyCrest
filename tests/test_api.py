@@ -240,7 +240,7 @@ class TestApi(unittest.TestCase):
             recf = open(path, 'r')
             rec = pickle.loads(zlib.decompress(recf.read()))
             recf.close()
-            rec['expires'] = 1
+            rec = rec[0], 1
 
             recf = open(path, 'w')
             recf.write(zlib.compress(pickle.dumps(rec)))
@@ -633,4 +633,4 @@ class TestApiCache(unittest.TestCase):
             with mock.patch('time.time') as mock_time:
                 mock_time.return_value = 0
                 eve.shouldCache()
-                self.assertEqual(list(eve.cache._dict.items())[0][1]['expires'], 300)
+                self.assertEqual(list(eve.cache._dict.items())[0][1][1], 300)
