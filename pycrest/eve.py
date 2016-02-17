@@ -1,6 +1,6 @@
 import os
 import base64
-import requests
+from requests_futures.sessions import FuturesSession
 import time
 import zlib
 from pycrest import version
@@ -114,7 +114,7 @@ class DictCache(APICache):
 class APIConnection(object):
     def __init__(self, additional_headers=None, user_agent=None, cache_dir=None, cache=None):
         # Set up a Requests Session
-        session = requests.Session()
+        session = FuturesSession()
         if additional_headers is None:
             additional_headers = {}
         if user_agent is None:
@@ -165,7 +165,7 @@ class APIConnection(object):
             logger.debug('Cache miss for resource %s (params=%s', resource, prms)
 
         logger.debug('Getting resource %s (params=%s)', resource, prms)
-        res = self._session.get(resource, params=prms)
+        res = self._session.get(resource, params=prms).result()
         if res.status_code != 200:
             raise APIException("Got unexpected status code from server: %i" % res.status_code)
 
@@ -231,7 +231,7 @@ class EVE(APIConnection):
     def _authorize(self, params):
         auth = text_(base64.b64encode(bytes_("%s:%s" % (self.client_id, self.api_key))))
         headers = {"Authorization": "Basic %s" % auth}
-        res = self._session.post("%s/token" % self._oauth_endpoint, params=params, headers=headers)
+        res = self._session.post("%s/token" % self._oauth_endpoint, params=params, headers=headers).result()
         if res.status_code != 200:
             raise APIException("Got unexpected status code from API: %i" % res.status_code)
         return res.json()
