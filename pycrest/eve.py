@@ -114,7 +114,7 @@ class DictCache(APICache):
 class APIConnection(object):
     def __init__(self, additional_headers=None, user_agent=None, cache_dir=None, cache=None):
         # Set up a Requests Session
-        session = FuturesSession()
+        session = FuturesSession(max_workers=20)
         if additional_headers is None:
             additional_headers = {}
         if user_agent is None:
